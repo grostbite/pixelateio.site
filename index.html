@@ -1,0 +1,259 @@
+<html>
+
+	<head>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+		<title>Pixelate.IO | Image to Pixel Art</title>
+
+		<meta name="description" content="Free easy service to convert image to Pixel Art."/>
+
+		<style>
+
+			@font-face {
+
+				font-family: "SF Pixelate";
+
+				src: url("SFPixelate.ttf");
+
+			}
+
+			body {
+
+				margin: 0px;
+
+				background-color: #62727b;
+
+				color: #fff;
+
+				font-family: "SF Pixelate", sans-serif;
+
+				user-select: none;
+
+			}
+
+			header {
+
+				position: fixed;
+
+				top: 0px;
+
+				width: 100%;
+
+				padding-top: 20px;
+
+				padding-bottom: 20px;
+
+				background-color: #37474f;
+
+				z-index: 3;
+
+				text-align: center;
+
+			}
+
+			canvas {
+
+				display: none;
+
+			}
+
+			section > input {
+
+				display: none;
+
+			}
+
+			section > h1 {
+
+				position: absolute;
+
+				top: 20%;
+
+				width: 100%;
+
+				text-align: center;
+
+				font-size: 40px;
+
+			}
+
+			section > label {
+
+				background-color: #102027;
+
+    			display: inline-block;
+
+    			padding-top: 20px;
+
+				padding-bottom: 20px;
+
+				width: 200px;
+
+				position: absolute;
+
+				left: 50%;
+
+				top: 50%;
+
+				margin-top: -30px;
+
+				margin-left: -100px;
+
+    			cursor: pointer;
+
+				font-size: 20px;
+
+				text-align: center;
+
+			}
+
+			section > label:hover {
+
+				opacity: 0.8;
+
+			}
+
+			section > #img {
+
+				display: none;
+
+				position: absolute;
+
+				width: 100%;
+
+				height: 100%;
+
+				z-index: 1;
+
+				background-color: #62727b;			
+
+			}
+
+			section > #img > .text {
+
+				text-align: center;
+
+				position: absolute;
+
+				top: 50%;
+
+				width: 100%;
+
+				font-size: 40px;
+
+			}
+
+			section > #img > img {
+
+				position: absolute;
+
+				width: 50%;
+
+				left: 50%;
+
+				top: 50%;
+
+				margin-left: -25%;
+
+				margin-top: -25%;
+
+				object-fit: cover;
+
+			}
+
+			section > #img > label {
+
+				background-color: #102027;
+
+				display: inline-block;
+
+				padding-top: 20px;
+
+				padding-bottom: 20px;
+
+				width: 200px;
+
+				position: relative;
+
+				left: 50%;
+
+				top: 50%;
+
+				margin-left: -100px;
+
+				cursor: pointer;
+
+				font-size: 20px;
+
+				text-align: center;
+
+				z-index: 1;
+
+			}
+
+			section > #img > label:hover {
+
+				opacity: 0.8;
+
+			}
+
+			footer {
+
+				position: fixed;
+
+				bottom: 20px;
+
+				width: 100%;
+
+				text-align: center;
+
+				font-size: 14px;
+
+			}
+
+		</style>
+
+	</head>
+
+	<body>
+
+		<header>
+
+			Pixelate.IO
+
+		</header>
+
+		<section>
+
+			<h1>Image to Pixel Art</h1>
+
+			<label for="imageuser">
+				Start
+			</label>
+
+			<input type="file" id="imageuser" accept=".png,.jpg,.jpeg"/>
+
+			<canvas id="canvas"></canvas>
+
+			<canvas id="re"></canvas>
+
+			<script>
+
+				let images = document.getElementById("imageuser"); images.addEventListener("change", loadimage, !1); let canvas = document.getElementById("canvas"), ctx = canvas.getContext("2d"), output = document.getElementById("re"), result = output.getContext("2d"), size = 0, hsize = 0, sex = 3; const pick = (e, t) => { let s = ctx.getImageData(e, t, sex, sex).data; return "rgba(" + s[0] + ", " + s[1] + ", " + s[2] + ", " + s[3] / 255 + ")" }; let w = [], h = []; const genpos = () => { let e = 0; for (let t = 0; t < size; t++)e += sex, h.push(e), w.push(e) }, pickpos = (e, t) => { var s = w[e], i = h[t]; return pick(s, i) }, make = () => { setTimeout(() => { for (let e = 0; e < size; e++)setTimeout(() => { for (let t = 0; t < hsize; t++)result.fillStyle = "" + pickpos(e, t), result.fillRect(10 + 10 * e, 10 + 10 * t, 10, 10) }, 1) }, 1e3), setTimeout(() => { canvas2img() }, 2e4) }, canvas2img = () => { document.getElementById("img").innerHTML = "<img src='" + output.toDataURL("image/png") + "'/><label onclick=\"download()\">Download</label>" }; function loadimage(e) { var t = new FileReader; t.onload = function (e) { let t = new Image; t.onload = function () { w = [], h = [], t.style.display = "none", size = t.width, hsize = t.height, document.getElementById("re").setAttribute("width", 3.3 * size + "px"), document.getElementById("re").setAttribute("height", 3.3 * hsize + "px"), document.getElementById("canvas").setAttribute("width", size + "px"), document.getElementById("canvas").setAttribute("height", hsize + "px"), ctx.drawImage(t, 0, 0), genpos(), setTimeout(() => { document.getElementById("img").style.display = "block", document.getElementById("img").innerHTML = "<div class=\"text\">Converting..</div>", make() }, 2e3) }, t.src = e.target.result }, t.readAsDataURL(e.target.files[0]) }; function download() { let links = document.createElement("a"); links.download = "pixelateio.png", links.href=output.toDataURL('image/png').replace('image/png', 'image/octet-stream'), document.body.appendChild(links), links.click(), document.body.removeChild(links),delete links };
+
+			</script>
+
+			<div id="img"></div>
+
+		</section>
+
+		<footer>
+
+			Development by wencms@gmail.com
+
+		</footer>
+
+	</body>
+
+</html>
